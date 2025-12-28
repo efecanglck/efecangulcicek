@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İyi ki Doğdun! 🎂</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* --- Başlangıç Ekranı --- */
+        #start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #start-btn:hover { transform: scale(1.1); }
+
+        /* --- Pasta ve Mumlar --- */
+        .cake-container {
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .cake {
+            position: relative;
+            width: 250px;
+            height: 100px;
+            background: #f8c291;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 0 #e17055 inset;
+        }
+        
+        .cake::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -10px;
+            width: 270px;
+            height: 10px;
+            background: #d63031;
+            border-radius: 10px;
+        }
+
+        .frosting {
+            position: absolute;
+            top: -20px;
+            width: 100%;
+            height: 30px;
+            background: #fdcb6e;
+            border-radius: 50px;
+            z-index: 2;
+        }
+
+        .candle {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 50px;
+            background: repeating-linear-gradient(45deg, #fff, #fff 5px, #74b9ff 5px, #74b9ff 10px);
+            z-index: 1;
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: radial-gradient(ellipse at bottom, #ffeead 0%, #ff6a00 100%);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 -5px 15px rgba(255, 165, 0, 0.6);
+            animation: flicker 0.1s infinite alternate;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Mumlar Söndüğünde */
+        .flame.off {
+            opacity: 0;
+        }
+
+        /* --- Mesaj --- */
+        #message {
+            margin-top: 50px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+        
+        #message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #message h1 {
+            font-size: 3rem;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            margin: 0;
+        }
+
+        /* --- Balonlar --- */
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 50px;
+            height: 70px;
+            background: red;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: floatUp 5s ease-in forwards;
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 24px;
+            width: 2px;
+            height: 50px;
+            background: white;
+        }
+
+        /* Animasyonlar */
+        @keyframes flicker {
+            0% { transform: translateX(-50%) skewX(2deg) scaleY(1); }
+            100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
+        }
+
+        @keyframes floatUp {
+            0% { bottom: -100px; opacity: 0.8; }
+            100% { bottom: 120vh; opacity: 0; }
+        }
+
+        .guide-text {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="music/gizemligizem.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="start-overlay">
+        <h2 style="color:white; margin-bottom: 20px;">Sürprize Hazır mısın?</h2>
+        <button id="start-btn">Başlat ve İzin Ver 🎤</button>
+        <p style="color:#ccc; font-size:0.8rem; margin-top:10px;">Mikrofon izni vermen gerekiyor.</p>
+    </div>
+
+    <div class="cake-container">
+        <div class="cake">
+            <div class="frosting"></div>
+            <div class="candle">
+                <div class="flame" id="flame"></div>
+            </div>
+        </div>
+    </div>
+
+    <p class="guide-text" id="guide">Muma doğru üfle... 💨</p>
+
+    <div id="message">
+        <h1>Seni seviyorum aşkım ❤️</h1>
+        <p>İyi ki doğdun!</p>
+    </div>
+
+    <script>
+        // Değişkenler
+        const startBtn = document.getElementById('start-btn');
+        const overlay = document.getElementById('start-overlay');
+        const flame = document.getElementById('flame');
+        const message = document.getElementById('message');
+        const audio = document.getElementById('bg-music');
+        const guide = document.getElementById('guide');
+        
+        let audioContext;
+        let analyser;
+        let microphone;
+        let isBlowDetected = false;
+
+        // Başlat Butonuna Tıklayınca
+        startBtn.addEventListener('click', async () => {
+            try {
+                // 1. Müziği Başlat
+                audio.play();
+
+                // 2. Mikrofon İzni İste ve AudioContext Başlat
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                
+                // Arayüzü güncelle
+                overlay.style.display = 'none';
+                detectBlow();
+
+            } catch (err) {
+                alert("Mikrofon izni vermezsen mumu üfleyemezsin :( Lütfen sayfayı yenile ve izin ver.");
+                console.error(err);
+            }
+        });
+
+        // Üfleme Algılama Fonksiyonu
+        function detectBlow() {
+            if (isBlowDetected) return;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            analyser.getByteFrequencyData(dataArray);
+
+            // Basit bir ses seviyesi hesaplama
+            let sum = 0;
+            for(let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i];
+            }
+            let average = sum / bufferLength;
+
+            // Eşik Değeri (Hassasiyeti buradan ayarlayabilirsin)
+            // Eğer çok zor sönüyorsa 40-50 yap, çok kolay sönüyorsa 80-90 yap.
+            const threshold = 60; 
+
+            if (average > threshold) {
+                extinguishCandle();
+            } else {
+                requestAnimationFrame(detectBlow);
+            }
+        }
+
+        // Mum Söndüğünde Çalışacaklar
+        function extinguishCandle() {
+            isBlowDetected = true;
+            
+            // 1. Alevi Söndür
+            flame.classList.add('off');
+            guide.style.opacity = 0;
+
+            // 2. Mesajı Göster
+            setTimeout(() => {
+                message.classList.add('show');
+            }, 500);
+
+            // 3. Konfeti Patlat
+            launchConfetti();
+
+            // 4. Balonları Uçur
+            createBalloons();
+        }
+
+        // Konfeti Efekti
+        function launchConfetti() {
+            const duration = 3000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff69b4', '#ff0000', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff69b4', '#ff0000', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Balon Oluşturma
+        function createBalloons() {
+            const colors = ['#ff7675', '#74b9ff', '#55efc4', '#a29bfe', '#fd79a8'];
+            
+            for (let i = 0; i < 20; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                
+                // Rastgele Konum ve Renk
+                const randomLeft = Math.random() * 100;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                const randomDelay = Math.random() * 2;
+                
+                balloon.style.left = randomLeft + 'vw';
+                balloon.style.background = randomColor;
+                balloon.style.animationDelay = randomDelay + 's';
+
+                document.body.appendChild(balloon);
+            }
+        }
+    </script>
+</body>
+</html>
