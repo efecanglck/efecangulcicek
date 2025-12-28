@@ -270,7 +270,7 @@
             let average = sum / bufferLength;
 
             // ZORLUK AYARI: 100dB Eşiği (Normal konuşma ~50-60, üfleme 100+)
-            if (average > 100) { 
+            if (average > 80) { 
                 extinguishCandles();
             } else {
                 requestAnimationFrame(detectBlow);
