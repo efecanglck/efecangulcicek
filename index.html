@@ -112,65 +112,69 @@
         .envelope-wrapper.visible { transform: translate(-50%, -50%) scale(1); }
 
         .envelope {
-            position: relative; width: 300px; height: 200px; background: #c0392b;
-            border-radius: 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative; width: 300px; height: 200px; background: #e8d7c3;
+            border-radius: 3px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 1px solid #d4c4b0;
         }
         /* Kapakçık (Flap) */
         .envelope .flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 0;
-            border-left: 150px solid transparent; border-right: 150px solid transparent;
-            border-top: 110px solid #e74c3c; /* Daha açık kırmızı */
-            transform-origin: top; transition: transform 0.6s ease, z-index 0.2s;
+            position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+            background: #e8d7c3;
+            border-bottom: 1px solid #d4c4b0;
+            transform-origin: top; transition: transform 0.6s ease;
             z-index: 5;
+            border-radius: 3px 3px 0 0;
         }
         /* Cep (Pocket) */
         .envelope .pocket {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
-            border-left: 150px solid transparent; border-right: 150px solid transparent;
-            border-bottom: 120px solid #c0392b;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+            background: #f0e6d8;
+            border-top: 1px solid #d4c4b0;
             z-index: 4;
+            border-radius: 0 0 3px 3px;
         }
 
         /* Mektup Kağıdı */
         .letter {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 90%; height: 90%; background: #fffdf0;
+            position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);
+            width: 270px; height: 150px; background: #fffdf0;
             padding: 20px; box-sizing: border-box;
             transition: all 0.8s ease;
-            z-index: 3; /* Cep ve kapakçığın altında başlar */
+            z-index: 3;
             overflow: hidden;
             display: flex; flex-direction: column; align-items: center;
             font-family: 'Dancing Script', cursive; color: #333;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
         .letter h2 { margin: 0; font-size: 1.5rem; color: #d63031; }
         .letter p { font-size: 1.2rem; line-height: 1.4; text-align: left; margin-top: 10px;}
 
         /* --- Animasyon Durumları --- */
-        /* 1. Tıklandı: Kapakçık açılır */
+        /* 1. Tıklandı: Kapak açılır */
         .envelope-wrapper.open .flap {
             transform: rotateX(180deg);
-            z-index: 1; /* Mektubun arkasına geçer */
+            z-index: 1;
         }
         /* 1. Tıklandı: Mektup biraz çıkar */
         .envelope-wrapper.open .letter {
-            bottom: 60px; /* Biraz yukarı kayar */
-            z-index: 6; /* Cepten yukarı çıkar */
-            height: 220px; /* Biraz uzar */
+            bottom: 60px;
+            z-index: 6;
+            height: 220px;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
         }
 
-        /* 2. Mektuba Tıklandı: Tamamen açılır (Full Read Mode) */
+        /* 2. Mektubu Tıkla: Tamamen açılır (Full Read Mode) */
         .envelope-wrapper.full-read .letter {
             position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(1.2);
+            transform: translate(-50%, -50%);
             width: 350px; height: 500px;
             bottom: auto; z-index: 200;
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            overflow-y: auto; /* Yazı uzunsa kaydırılabilir */
+            overflow-y: auto;
             border-radius: 5px;
         }
-        /* Zarf kaybolsun mektup okurken */
-        .envelope-wrapper.full-read .envelope { opacity: 0; }
 
         .guide-text { margin-top: 60px; color: #888; font-size: 0.8rem; }
         .click-hint {
@@ -178,7 +182,42 @@
             color: white; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s;
         }
         .envelope-wrapper.visible .click-hint { opacity: 1; }
-        .envelope-wrapper.open .click-hint { display: none; }
+        .envelope-wrapper.full-read .click-hint { display: none; }
+
+        /* Kapatma/Tekrar Düğmesi */
+        .close-btn {
+            position: fixed; top: 30px; right: 30px; width: 50px; height: 50px;
+            background: rgba(255, 105, 180, 0.8); border: none; border-radius: 50%;
+            font-size: 24px; color: white; cursor: pointer; z-index: 300;
+            opacity: 0; transition: opacity 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
+        .close-btn.visible { opacity: 1; }
+        
+        #closeBtnIcon {
+            transition: transform 0.3s ease;
+        }
+        .close-btn:hover #closeBtnIcon {
+            transform: rotate(90deg);
+        }
+        
+        @keyframes rotateIcon {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #closeBtnIcon.spinning {
+            animation: rotateIcon 2s linear infinite;
+        }
+        
+        @keyframes fadeInFlame {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .flame.relight {
+            animation: fadeInFlame 1s ease-in-out forwards;
+        }
 
     </style>
 </head>
@@ -205,7 +244,7 @@
         <div class="cake"><div class="frosting"></div></div>
     </div>
 
-    <p class="guide-text" id="guide">Güçlü bir şekilde üfle! (Ses seviyesi 100+ olmalı) 💨</p>
+    <p class="guide-text" id="guide">Güçlü bir şekilde üfle! (Ses seviyesi 85+ olmalı) 💨</p>
 
     <div class="envelope-wrapper" id="envelopeWrapper">
         <div class="envelope">
@@ -225,6 +264,13 @@
         <div class="click-hint">Zarfa Tıkla ✨</div>
     </div>
 
+    <button class="close-btn" id="closeBtn">
+        <svg id="closeBtnIcon" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="white" stroke-width="2">
+            <line x1="6" y1="6" x2="24" y2="24"/>
+            <line x1="24" y1="6" x2="6" y2="24"/>
+        </svg>
+    </button>
+
     <script>
         const startBtn = document.getElementById('start-btn');
         const overlay = document.getElementById('start-overlay');
@@ -234,6 +280,7 @@
         const envelopeWrapper = document.getElementById('envelopeWrapper');
         const letterContent = document.getElementById('letterContent');
         const cakeContainer = document.getElementById('cakeContainer');
+        const closeBtn = document.getElementById('closeBtn');
         
         let audioContext, analyser, microphone, isBlowDetected = false;
 
@@ -269,8 +316,8 @@
             for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
             let average = sum / bufferLength;
 
-            // ZORLUK AYARI: 100dB Eşiği (Normal konuşma ~50-60, üfleme 100+)
-            if (average > 80) { 
+            // ZORLUK AYARI: 85dB Eşiği (Normal konuşma ~50-60, üfleme 85+)
+            if (average > 85) { 
                 extinguishCandles();
             } else {
                 requestAnimationFrame(detectBlow);
@@ -313,16 +360,13 @@
             }, 200); // Her 200ms'de bir sesi artır
         }
 
-        // --- ZARF ETKİLEŞİMİ ---
-        // 1. Tıkla: Kapağı Aç
+        // --- ZARF ETKİLEŞİMİ (TIKLAMA) ---
+        // 1. Zarfa Tıkla: Kapağı Aç
         envelopeWrapper.addEventListener('click', (e) => {
-            // Eğer zaten tamamen açıksa işlem yapma
             if(envelopeWrapper.classList.contains('full-read')) return;
-
-            // İlk tıklama: Kapağı aç
             if (!envelopeWrapper.classList.contains('open')) {
                 envelopeWrapper.classList.add('open');
-                e.stopPropagation(); // Mektuba tıklamayı engelleme
+                e.stopPropagation();
             }
         });
 
@@ -355,6 +399,47 @@
                 document.body.appendChild(b);
             }
         }
+
+        // --- KAPATMA/TEKRAR DÜĞMESI ---
+        let isRepeatMode = false;
+        const closeBtnIcon = document.getElementById('closeBtnIcon');
+        
+        closeBtn.addEventListener('click', () => {
+            if (!isRepeatMode) {
+                // Kapatma modu: Mektubu ve zarfı kapat
+                envelopeWrapper.classList.remove('full-read', 'open');
+                closeBtn.classList.remove('visible');
+                closeBtnIcon.innerHTML = '<circle cx="15" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><path d="M 15 10 L 15 20 M 10 15 L 20 15" stroke="white" stroke-width="2" stroke-linecap="round"/>';
+                isRepeatMode = true;
+                closeBtn.classList.add('visible');
+            } else {
+                // Tekrar modu: Sayfayı yenile
+                closeBtnIcon.classList.add('spinning');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        });
+
+        // Mektup açıldığında ilk kez açıldı mı kontrol et
+        let isFirstOpen = true;
+        
+        const fullReadObserver = new MutationObserver(() => {
+            if (envelopeWrapper.classList.contains('full-read')) {
+                let delay = isFirstOpen ? 10000 : 2000;
+                isFirstOpen = false;
+                
+                setTimeout(() => {
+                    if (envelopeWrapper.classList.contains('full-read')) {
+                        isRepeatMode = false;
+                        closeBtnIcon.innerHTML = '<line x1="6" y1="6" x2="24" y2="24"/><line x1="24" y1="6" x2="6" y2="24"/>';
+                        closeBtnIcon.classList.remove('spinning');
+                        closeBtn.classList.add('visible');
+                    }
+                }, delay);
+            }
+        });
+        fullReadObserver.observe(envelopeWrapper, { attributes: true, attributeFilter: ['class'] });
     </script>
 </body>
 </html>
