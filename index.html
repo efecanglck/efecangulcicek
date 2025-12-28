@@ -21,215 +21,165 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- Başlangıç Ekranı --- */
+        /* --- Giriş Ekranı --- */
         #start-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            z-index: 200;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
         }
         #start-btn {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: #ff69b4;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
+            padding: 15px 40px; font-size: 1.2rem; background: #ff69b4; color: white;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
             transition: transform 0.2s;
-            font-weight: bold;
         }
         #start-btn:hover { transform: scale(1.1); }
 
-        /* --- Pasta ve Mumlar --- */
+        /* --- Pasta Alanı --- */
         .cake-container {
             position: relative;
-            margin-top: 100px; /* Mektup için yer açtık */
+            margin-top: 50px;
             transform: scale(1.2);
+            transition: opacity 1s;
         }
 
         .cake {
-            position: relative;
-            width: 300px;
-            height: 120px;
-            background: #f8c291;
-            border-radius: 10px 10px 0 0;
+            position: relative; width: 300px; height: 120px; background: #f8c291;
+            border-radius: 10px 10px 0 0; display: flex; justify-content: center; align-items: flex-end;
             box-shadow: 0 4px 0 #e17055 inset;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; /* Mumları tabana hizala */
         }
-        
-        /* Pasta tabanı süsü */
         .cake::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -10px;
-            width: 320px;
-            height: 15px;
-            background: #d63031;
-            border-radius: 10px;
+            content: ''; position: absolute; bottom: 0; left: -10px;
+            width: 320px; height: 15px; background: #d63031; border-radius: 10px;
         }
-
         .frosting {
-            position: absolute;
-            top: -20px;
-            width: 100%;
-            height: 40px;
-            background: #fdcb6e;
-            border-radius: 50px;
-            z-index: 2;
+            position: absolute; top: -20px; width: 100%; height: 40px;
+            background: #fdcb6e; border-radius: 50px; z-index: 2;
         }
 
-        /* --- Mum Düzeni --- */
+        /* Mumlar */
         .candles-group {
-            position: absolute;
-            top: -50px; /* Mumları yukarı çek */
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            z-index: 5;
-            gap: 15px; /* Mumlar arası boşluk */
+            position: absolute; top: -50px; width: 100%; display: flex;
+            justify-content: center; align-items: flex-end; z-index: 5; gap: 15px;
         }
-
-        /* Standart Mum */
         .candle {
-            position: relative;
-            width: 12px;
-            height: 40px;
+            position: relative; width: 12px; height: 40px;
             background: repeating-linear-gradient(45deg, #fff, #fff 5px, #74b9ff 5px, #74b9ff 10px);
             border-radius: 3px;
         }
-
-        /* Sayı Mumları (18) */
         .number-candle {
-            font-family: 'Poppins', sans-serif;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff69b4;
-            text-shadow: 2px 2px 0px #fff;
-            position: relative;
-            line-height: 1;
-            margin: 0 5px;
+            font-size: 3rem; font-weight: bold; color: #ff69b4;
+            text-shadow: 2px 2px 0px #fff; position: relative; line-height: 1; margin: 0 5px;
         }
-
-        /* Alev (Ortak Stil) */
         .flame {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 20px;
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 12px; height: 20px;
             background: radial-gradient(ellipse at bottom, #ffeead 0%, #ff6a00 100%);
             border-radius: 50% 50% 20% 20%;
-            box-shadow: 0 -5px 15px rgba(255, 165, 0, 0.6);
             animation: flicker 0.1s infinite alternate;
-            opacity: 1;
             transition: opacity 1s ease;
         }
-
-        /* Sayıların alevi daha yukarıda olmalı */
-        .number-candle .flame {
-            top: -25px;
-        }
-        /* Standart mumun alevi */
-        .candle .flame {
-            top: -20px;
-        }
-
+        .number-candle .flame { top: -25px; }
+        .candle .flame { top: -20px; }
         .flame.off { opacity: 0; }
 
-        /* --- Mesaj --- */
-        #message {
-            position: absolute;
-            top: 10%;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1s ease;
-            z-index: 10;
-        }
-        #message h1 {
-            font-size: 2.5rem;
-            color: #ff69b4;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
-        }
-
-        /* --- MEKTUP --- */
-        #letter-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 80%;
-            max-width: 500px;
-            background: #fffdf0; /* Kağıt rengi */
-            color: #333;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0;
-            transition: all 1s ease;
-            z-index: 200;
-            font-family: 'Dancing Script', cursive; /* El yazısı */
-        }
-
-        #letter-container.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .letter-content h2 {
-            text-align: center;
-            margin-top: 0;
-            color: #d63031;
-        }
-
-        .letter-content p {
-            font-size: 1.4rem;
-            line-height: 1.6;
-        }
-
-        /* Mektup Kapatma Butonu */
-        .close-letter {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-family: sans-serif;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #aaa;
-        }
-
-        /* --- Animasyonlar --- */
         @keyframes flicker {
             0% { transform: translateX(-50%) skewX(2deg) scaleY(1); }
             100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
         }
-        
+
+        /* --- Balonlar ve İpleri --- */
         .balloon {
-            position: absolute;
-            bottom: -100px;
-            width: 40px;
-            height: 50px;
-            background: red;
-            border-radius: 50%;
-            animation: floatUp 5s ease-in forwards;
-            z-index: 1;
+            position: absolute; bottom: -120px; width: 45px; height: 55px;
+            background: red; border-radius: 50%;
+            animation: floatUp 6s ease-in forwards;
+            z-index: 10;
         }
-        @keyframes floatUp {
-            to { bottom: 120vh; }
+        /* Balon İpi */
+        .balloon::before {
+            content: ''; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+            width: 1px; height: 30px; background: rgba(255,255,255,0.7);
+        }
+        @keyframes floatUp { to { bottom: 120vh; } }
+
+        /* --- İNTERAKTİF ZARF SİSTEMİ --- */
+        .envelope-wrapper {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            z-index: 100; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+            cursor: pointer;
+        }
+        .envelope-wrapper.visible { transform: translate(-50%, -50%) scale(1); }
+
+        .envelope {
+            position: relative; width: 300px; height: 200px; background: #c0392b;
+            border-radius: 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        /* Kapakçık (Flap) */
+        .envelope .flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 0;
+            border-left: 150px solid transparent; border-right: 150px solid transparent;
+            border-top: 110px solid #e74c3c; /* Daha açık kırmızı */
+            transform-origin: top; transition: transform 0.6s ease, z-index 0.2s;
+            z-index: 5;
+        }
+        /* Cep (Pocket) */
+        .envelope .pocket {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
+            border-left: 150px solid transparent; border-right: 150px solid transparent;
+            border-bottom: 120px solid #c0392b;
+            z-index: 4;
         }
 
-        .guide-text { margin-top: 50px; color: #aaa; font-size: 0.9rem; }
+        /* Mektup Kağıdı */
+        .letter {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 90%; height: 90%; background: #fffdf0;
+            padding: 20px; box-sizing: border-box;
+            transition: all 0.8s ease;
+            z-index: 3; /* Cep ve kapakçığın altında başlar */
+            overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            font-family: 'Dancing Script', cursive; color: #333;
+        }
+        .letter h2 { margin: 0; font-size: 1.5rem; color: #d63031; }
+        .letter p { font-size: 1.2rem; line-height: 1.4; text-align: left; margin-top: 10px;}
+
+        /* --- Animasyon Durumları --- */
+        /* 1. Tıklandı: Kapakçık açılır */
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Mektubun arkasına geçer */
+        }
+        /* 1. Tıklandı: Mektup biraz çıkar */
+        .envelope-wrapper.open .letter {
+            bottom: 60px; /* Biraz yukarı kayar */
+            z-index: 6; /* Cepten yukarı çıkar */
+            height: 220px; /* Biraz uzar */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 2. Mektuba Tıklandı: Tamamen açılır (Full Read Mode) */
+        .envelope-wrapper.full-read .letter {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(1.2);
+            width: 350px; height: 500px;
+            bottom: auto; z-index: 200;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            overflow-y: auto; /* Yazı uzunsa kaydırılabilir */
+            border-radius: 5px;
+        }
+        /* Zarf kaybolsun mektup okurken */
+        .envelope-wrapper.full-read .envelope { opacity: 0; }
+
+        .guide-text { margin-top: 60px; color: #888; font-size: 0.8rem; }
+        .click-hint {
+            position: absolute; bottom: -40px; width: 100%; text-align: center;
+            color: white; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s;
+        }
+        .envelope-wrapper.visible .click-hint { opacity: 1; }
+        .envelope-wrapper.open .click-hint { display: none; }
+
     </style>
 </head>
 <body>
@@ -239,67 +189,55 @@
     </audio>
 
     <div id="start-overlay">
-        <h2 style="color:white; margin-bottom: 20px;">🎉 Sürprize Hazır mısın?</h2>
-        <button id="start-btn">Mikrofonu Aç ve Başla 🎤</button>
-        <p style="color:#ccc; font-size:0.8rem; margin-top:10px;">Mumları üflemek için izin ver.</p>
+        <h2>🎂 Hazır mısın?</h2>
+        <button id="start-btn">Başlat 🎤</button>
     </div>
 
-    <div id="letter-container">
-        <div class="close-letter" onclick="document.getElementById('letter-container').style.display='none'">×</div>
-        <div class="letter-content">
-            <h2>Canım Sevgilim,</h2>
-            <p>
-                Seninle geçen her an benim için bir hediye. İyi ki doğdun, iyi ki varsın. 
-                18. yaşın sana tüm güzellikleri getirsin. Seni çok seviyorum!
-                <br><br>
-                Sonsuza kadar senin... ❤️
-            </p>
-        </div>
-    </div>
-
-    <div id="message">
-        <h1>Seni Seviyorum Aşkım ❤️</h1>
-    </div>
-
-    <div class="cake-container">
+    <div class="cake-container" id="cakeContainer">
         <div class="candles-group">
             <div class="candle"><div class="flame"></div></div>
             <div class="candle"><div class="flame"></div></div>
-            
-            <div class="number-candle">
-                1
-                <div class="flame"></div>
-            </div>
-            <div class="number-candle">
-                8
-                <div class="flame"></div>
-            </div>
-
+            <div class="number-candle">1<div class="flame"></div></div>
+            <div class="number-candle">8<div class="flame"></div></div>
             <div class="candle"><div class="flame"></div></div>
             <div class="candle"><div class="flame"></div></div>
         </div>
-
-        <div class="cake">
-            <div class="frosting"></div>
-        </div>
+        <div class="cake"><div class="frosting"></div></div>
     </div>
 
-    <p class="guide-text" id="guide">Mumları söndürmek için kuvvetlice üfle! 💨</p>
+    <p class="guide-text" id="guide">Güçlü bir şekilde üfle! (Ses seviyesi 100+ olmalı) 💨</p>
+
+    <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="pocket"></div>
+            <div class="letter" id="letterContent">
+                <h2>Canım Sevgilim,</h2>
+                <p>
+                    İyi ki doğdun, iyi ki varsın. 18. yaşın sana mutluluk getirsin.
+                    Seni çok ama çok seviyorum. <br><br>
+                    Bu mektubu yukarı çekip okuduğun gibi, hayatındaki tüm güzellikleri de kendine çekmen dileğiyle...
+                    <br><br>
+                    Sonsuza kadar senin... ❤️
+                </p>
+            </div>
+        </div>
+        <div class="click-hint">Zarfa Tıkla ✨</div>
+    </div>
 
     <script>
         const startBtn = document.getElementById('start-btn');
         const overlay = document.getElementById('start-overlay');
         const flames = document.querySelectorAll('.flame');
-        const message = document.getElementById('message');
         const guide = document.getElementById('guide');
-        const letter = document.getElementById('letter-container');
         const audio = document.getElementById('bg-music');
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const letterContent = document.getElementById('letterContent');
+        const cakeContainer = document.getElementById('cakeContainer');
         
-        let audioContext;
-        let analyser;
-        let microphone;
-        let isBlowDetected = false;
+        let audioContext, analyser, microphone, isBlowDetected = false;
 
+        // --- BAŞLATMA ---
         startBtn.addEventListener('click', async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -308,14 +246,18 @@
                 microphone = audioContext.createMediaStreamSource(stream);
                 microphone.connect(analyser);
                 analyser.fftSize = 256;
-                
                 overlay.style.display = 'none';
+                
+                // Müzik sesini 0 yap ve hazırla (ama çalma)
+                audio.volume = 0;
+                
                 detectBlow();
             } catch (err) {
-                alert("Mikrofon izni gerekli! Lütfen sayfayı yenile ve izin ver.");
+                alert("Mikrofon izni şart! Sayfayı yenile.");
             }
         });
 
+        // --- ÜFLEME ALGILAMA ---
         function detectBlow() {
             if (isBlowDetected) return;
 
@@ -327,41 +269,72 @@
             for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
             let average = sum / bufferLength;
 
-            // Hassasiyet ayarı (Eşik değer)
-            if (average > 50) { 
+            // ZORLUK AYARI: 100dB Eşiği (Normal konuşma ~50-60, üfleme 100+)
+            if (average > 100) { 
                 extinguishCandles();
             } else {
                 requestAnimationFrame(detectBlow);
             }
         }
 
+        // --- MUMLAR SÖNDÜĞÜNDE ---
         function extinguishCandles() {
             isBlowDetected = true;
-            
-            // 1. Alevleri Söndür
             flames.forEach(f => f.classList.add('off'));
             guide.style.opacity = 0;
+            guide.innerText = "İyi ki doğdun! 🎉";
+            guide.style.opacity = 1;
 
-            // 2. Müzik BAŞLAT (Söndükten hemen sonra)
-            audio.play().catch(e => console.log("Otomatik oynatma engellendi, etkileşim gerekebilir."));
+            // 1. Müzik Fade-In Başlat
+            audio.play();
+            fadeInAudio();
 
-            // 3. Konfeti ve Balonlar
+            // 2. Efektler
             launchConfetti();
             createBalloons();
 
-            // 4. Kısa Mesajı Göster
+            // 3. Mektubu Getir (5 Saniye Sonra)
             setTimeout(() => {
-                message.style.opacity = 1;
-            }, 500);
-
-            // 5. MEKTUBU GÖSTER (5 Saniye Sonra)
-            setTimeout(() => {
-                // Mesajı gizle ki mektup rahat okunsun
-                message.style.opacity = 0; 
-                letter.classList.add('show');
-            }, 5000); // 5000 milisaniye = 5 saniye
+                cakeContainer.style.opacity = "0.3"; // Pastayı biraz silikleştir
+                envelopeWrapper.classList.add('visible');
+            }, 5000);
         }
 
+        // --- SES FADE-IN FONKSİYONU ---
+        function fadeInAudio() {
+            let vol = 0;
+            const interval = setInterval(() => {
+                if (vol < 1.0) {
+                    vol += 0.05; // Artış hızı
+                    audio.volume = Math.min(vol, 1.0);
+                } else {
+                    clearInterval(interval);
+                }
+            }, 200); // Her 200ms'de bir sesi artır
+        }
+
+        // --- ZARF ETKİLEŞİMİ ---
+        // 1. Tıkla: Kapağı Aç
+        envelopeWrapper.addEventListener('click', (e) => {
+            // Eğer zaten tamamen açıksa işlem yapma
+            if(envelopeWrapper.classList.contains('full-read')) return;
+
+            // İlk tıklama: Kapağı aç
+            if (!envelopeWrapper.classList.contains('open')) {
+                envelopeWrapper.classList.add('open');
+                e.stopPropagation(); // Mektuba tıklamayı engelleme
+            }
+        });
+
+        // 2. Mektuba Tıkla: Tamamen Çıkar
+        letterContent.addEventListener('click', (e) => {
+            if (envelopeWrapper.classList.contains('open')) {
+                envelopeWrapper.classList.add('full-read');
+                e.stopPropagation();
+            }
+        });
+
+        // --- ANİMASYON YARDIMCILARI ---
         function launchConfetti() {
             const end = Date.now() + 3000;
             (function frame() {
@@ -376,7 +349,7 @@
             for (let i = 0; i < 30; i++) {
                 const b = document.createElement('div');
                 b.className = 'balloon';
-                b.style.left = Math.random() * 100 + 'vw';
+                b.style.left = Math.random() * 90 + 5 + 'vw'; // Ekrandan taşmasın
                 b.style.background = colors[Math.floor(Math.random() * colors.length)];
                 b.style.animationDelay = Math.random() * 2 + 's';
                 document.body.appendChild(b);
