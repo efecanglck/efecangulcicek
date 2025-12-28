@@ -58,6 +58,18 @@
             background: #fdcb6e; border-radius: 50px; z-index: 2;
         }
 
+        /* Confetti dekorasyonu */
+        .birthday-confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: float-confetti 3s infinite ease-in;
+        }
+        @keyframes float-confetti {
+            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
         /* Mumlar */
         .candles-group {
             position: absolute; top: -50px; width: 100%; display: flex;
@@ -324,9 +336,18 @@
             }
         }
 
+        // --- MİKROFON ERİŞİMİNİ KES ---
+        function stopMicrophone() {
+            if (microphone) {
+                const stream = microphone.mediaStream;
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
         // --- MUMLAR SÖNDÜĞÜNDE ---
         function extinguishCandles() {
             isBlowDetected = true;
+            stopMicrophone(); // Mikrofon erişimini kes
             flames.forEach(f => f.classList.add('off'));
             guide.style.opacity = 0;
             guide.innerText = "İyi ki doğdun! 🎉";
