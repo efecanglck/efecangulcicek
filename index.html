@@ -8,25 +8,19 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #1a1a1a;
             color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
             font-family: 'Poppins', sans-serif;
         }
 
         /* --- Giriş Ekranı --- */
         #start-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 200;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 200;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
         }
         #start-btn {
@@ -36,54 +30,93 @@
         }
         #start-btn:hover { transform: scale(1.1); }
 
-        /* --- Pasta Alanı --- */
+        /* --- PASTA ALANI --- */
         .cake-container {
             position: relative;
             margin-top: 50px;
-            transform: scale(1.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(1.1);
             transition: opacity 1s;
         }
 
-        .cake {
-            position: relative; width: 300px; height: 120px; background: #f8c291;
-            border-radius: 10px 10px 0 0; display: flex; justify-content: center; align-items: flex-end;
-            box-shadow: 0 4px 0 #e17055 inset;
+        /* Katman Genel Stili */
+        .layer {
+            position: relative;
+            background: #f8c291;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 0 #e17055 inset, 2px 2px 5px rgba(0,0,0,0.3);
+            display: flex; 
+            justify-content: center; /* İçerikleri (mumları) ortala */
         }
-        .cake::after {
-            content: ''; position: absolute; bottom: 0; left: -10px;
-            width: 320px; height: 15px; background: #d63031; border-radius: 10px;
-        }
-        .frosting {
-            position: absolute; top: -20px; width: 100%; height: 40px;
-            background: #fdcb6e; border-radius: 50px; z-index: 2;
-        }
-
-        /* Confetti dekorasyonu */
-        .birthday-confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            pointer-events: none;
-            animation: float-confetti 3s infinite ease-in;
-        }
-        @keyframes float-confetti {
-            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        
+        /* Krema (Her katman için) */
+        .layer::before {
+            content: ''; position: absolute; top: 0; left: -5%;
+            width: 110%; height: 20px;
+            background: #fdcb6e;
+            border-radius: 20px;
+            z-index: 5; /* Krema z-index'i */
+            box-shadow: 0 2px 0 #fab1a0;
         }
 
-        /* Mumlar */
-        .candles-group {
-            position: absolute; top: -50px; width: 100%; display: flex;
-            justify-content: center; align-items: flex-end; z-index: 5; gap: 15px;
+        /* --- KATMAN BOYUTLARI --- */
+        .layer-top {
+            width: 140px; height: 50px; z-index: 10;
+            background: #f8c291;
         }
+        .layer-middle {
+            width: 220px; height: 60px; z-index: 9;
+            background: #fab1a0;
+        }
+        .layer-bottom {
+            width: 300px; height: 70px; z-index: 8;
+            background: #e17055;
+        }
+        /* Alt Tabak */
+        .layer-bottom::after {
+            content: ''; position: absolute; bottom: -10px; left: -15px;
+            width: 330px; height: 15px; background: #d63031; border-radius: 5px;
+        }
+
+        /* --- MUM KONUMLANDIRMA SİSTEMİ --- */
+        
+        /* Mumlar katmanın içinde yer alacak ve bottom:100% ile üste yapışacak */
+        .candle-spot {
+            position: absolute;
+            bottom: 100%; /* Katmanın tam tepesine yapış */
+            margin-bottom: -8px; /* Kremaya hafif batmış efekti */
+            z-index: 4; /* Kremanın arkasında kalsın (normal mumlar için) */
+        }
+
+        /* Sol ve Sağ Konumlandırmalar */
+        .pos-left { left: 15px; }
+        .pos-right { right: 15px; }
+        .pos-center { 
+            display: flex; gap: 10px; justify-content: center;
+            width: 100%;
+        }
+
+        /* Mum Tasarımı */
         .candle {
             position: relative; width: 12px; height: 40px;
             background: repeating-linear-gradient(45deg, #fff, #fff 5px, #74b9ff 5px, #74b9ff 10px);
             border-radius: 3px;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
         }
+
+        /* Rakam Mum Tasarımı - DÜZELTME BURADA */
         .number-candle {
             font-size: 3rem; font-weight: bold; color: #ff69b4;
-            text-shadow: 2px 2px 0px #fff; position: relative; line-height: 1; margin: 0 5px;
+            text-shadow: 2px 2px 0px #fff; 
+            position: relative; 
+            z-index: 10; /* <-- BU SATIR EKLENDİ: Rakamı kremanın (z-index:5) önüne alır */
+            line-height: 1; 
+            margin-bottom: -5px; 
         }
+
+        /* Alev Tasarımı */
         .flame {
             position: absolute; left: 50%; transform: translateX(-50%);
             width: 12px; height: 20px;
@@ -91,9 +124,9 @@
             border-radius: 50% 50% 20% 20%;
             animation: flicker 0.1s infinite alternate;
             transition: opacity 1s ease;
+            bottom: 100%; margin-bottom: 2px;
         }
-        .number-candle .flame { top: -25px; }
-        .candle .flame { top: -20px; }
+        .number-candle .flame { bottom: 90%; margin-bottom: 0; }
         .flame.off { opacity: 0; }
 
         @keyframes flicker {
@@ -101,102 +134,72 @@
             100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
         }
 
-        /* --- Balonlar ve İpleri --- */
+        /* Diğer Efektler */
+        .birthday-confetti {
+            position: fixed; width: 10px; height: 10px;
+            pointer-events: none; animation: float-confetti 3s infinite ease-in;
+        }
+        @keyframes float-confetti {
+            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
         .balloon {
             position: absolute; bottom: -120px; width: 45px; height: 55px;
             background: red; border-radius: 50%;
-            animation: floatUp 6s ease-in forwards;
-            z-index: 10;
+            animation: floatUp 6s ease-in forwards; z-index: 10;
         }
-        /* Balon İpi */
         .balloon::before {
             content: ''; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
             width: 1px; height: 30px; background: rgba(255,255,255,0.7);
         }
         @keyframes floatUp { to { bottom: 120vh; } }
 
-        /* --- İNTERAKTİF ZARF SİSTEMİ --- */
+        /* Zarf Stilleri */
         .envelope-wrapper {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
             z-index: 100; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
             cursor: pointer;
         }
         .envelope-wrapper.visible { transform: translate(-50%, -50%) scale(1); }
-
         .envelope {
             position: relative; width: 300px; height: 200px; background: #e8d7c3;
-            border-radius: 3px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            border: 1px solid #d4c4b0;
+            border-radius: 3px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #d4c4b0;
         }
-        /* Kapakçık (Flap) */
         .envelope .flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-            background: #e8d7c3;
-            border-bottom: 1px solid #d4c4b0;
-            transform-origin: top; transition: transform 0.6s ease;
-            z-index: 5;
-            border-radius: 3px 3px 0 0;
+            background: #e8d7c3; border-bottom: 1px solid #d4c4b0;
+            transform-origin: top; transition: transform 0.6s ease; z-index: 5; border-radius: 3px 3px 0 0;
         }
-        /* Cep (Pocket) */
         .envelope .pocket {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-            background: #f0e6d8;
-            border-top: 1px solid #d4c4b0;
-            z-index: 4;
-            border-radius: 0 0 3px 3px;
+            background: #f0e6d8; border-top: 1px solid #d4c4b0; z-index: 4; border-radius: 0 0 3px 3px;
         }
-
-        /* Mektup Kağıdı */
         .letter {
             position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);
             width: 270px; height: 150px; background: #fffdf0;
-            padding: 20px; box-sizing: border-box;
-            transition: all 0.8s ease;
-            z-index: 3;
-            overflow: hidden;
+            padding: 20px; box-sizing: border-box; transition: all 0.8s ease; z-index: 3; overflow: hidden;
             display: flex; flex-direction: column; align-items: center;
             font-family: 'Dancing Script', cursive; color: #333;
-            border-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
+            border-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer;
         }
         .letter h2 { margin: 0; font-size: 1.5rem; color: #d63031; }
         .letter p { font-size: 1.2rem; line-height: 1.4; text-align: left; margin-top: 10px;}
-
-        /* --- Animasyon Durumları --- */
-        /* 1. Tıklandı: Kapak açılır */
-        .envelope-wrapper.open .flap {
-            transform: rotateX(180deg);
-            z-index: 1;
-        }
-        /* 1. Tıklandı: Mektup biraz çıkar */
-        .envelope-wrapper.open .letter {
-            bottom: 60px;
-            z-index: 6;
-            height: 220px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-        }
-
-        /* 2. Mektubu Tıkla: Tamamen açılır (Full Read Mode) */
+        .envelope-wrapper.open .flap { transform: rotateX(180deg); z-index: 1; }
+        .envelope-wrapper.open .letter { bottom: 60px; z-index: 6; height: 220px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
         .envelope-wrapper.full-read .letter {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px; height: 500px;
-            bottom: auto; z-index: 200;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            overflow-y: auto;
-            border-radius: 5px;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 350px; height: 500px; bottom: auto; z-index: 200;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow-y: auto; border-radius: 5px;
         }
-
-        .guide-text { margin-top: 60px; color: #888; font-size: 0.8rem; }
+        .guide-text { margin-top: 20px; color: #888; font-size: 0.8rem; }
         .click-hint {
             position: absolute; bottom: -40px; width: 100%; text-align: center;
             color: white; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s;
         }
         .envelope-wrapper.visible .click-hint { opacity: 1; }
         .envelope-wrapper.full-read .click-hint { display: none; }
-
-        /* Kapatma/Tekrar Düğmesi */
+        
+        /* Close Button */
         .close-btn {
             position: fixed; top: 30px; right: 30px; width: 50px; height: 50px;
             background: rgba(255, 105, 180, 0.8); border: none; border-radius: 50%;
@@ -205,31 +208,12 @@
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-        .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
         .close-btn.visible { opacity: 1; }
-        
-        #closeBtnIcon {
-            transition: transform 0.3s ease;
-        }
-        .close-btn:hover #closeBtnIcon {
-            transform: rotate(90deg);
-        }
-        
-        @keyframes rotateIcon {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        #closeBtnIcon.spinning {
-            animation: rotateIcon 2s linear infinite;
-        }
-        
-        @keyframes fadeInFlame {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .flame.relight {
-            animation: fadeInFlame 1s ease-in-out forwards;
-        }
+        .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
+        #closeBtnIcon { transition: transform 0.3s ease; }
+        .close-btn:hover #closeBtnIcon { transform: rotate(90deg); }
+        @keyframes rotateIcon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        #closeBtnIcon.spinning { animation: rotateIcon 2s linear infinite; }
 
     </style>
 </head>
@@ -245,18 +229,35 @@
     </div>
 
     <div class="cake-container" id="cakeContainer">
-        <div class="candles-group">
-            <div class="candle"><div class="flame"></div></div>
-            <div class="candle"><div class="flame"></div></div>
-            <div class="number-candle">1<div class="flame"></div></div>
-            <div class="number-candle">8<div class="flame"></div></div>
-            <div class="candle"><div class="flame"></div></div>
-            <div class="candle"><div class="flame"></div></div>
+        
+        <div class="layer layer-top">
+            <div class="candle-spot pos-center">
+                <div class="number-candle">1<div class="flame"></div></div>
+                <div class="number-candle">8<div class="flame"></div></div>
+            </div>
         </div>
-        <div class="cake"><div class="frosting"></div></div>
+
+        <div class="layer layer-middle">
+            <div class="candle-spot pos-left">
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+            <div class="candle-spot pos-right">
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+        </div>
+
+        <div class="layer layer-bottom">
+            <div class="candle-spot pos-left">
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+            <div class="candle-spot pos-right">
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+        </div>
+
     </div>
 
-    <p class="guide-text" id="guide">Güçlü bir şekilde üfle! (Ses seviyesi 85+ olmalı) 💨</p>
+    <p class="guide-text" id="guide">Güçlü bir şekilde üfle!💨</p>
 
     <div class="envelope-wrapper" id="envelopeWrapper">
         <div class="envelope">
@@ -286,17 +287,16 @@
     <script>
         const startBtn = document.getElementById('start-btn');
         const overlay = document.getElementById('start-overlay');
-        const flames = document.querySelectorAll('.flame');
         const guide = document.getElementById('guide');
         const audio = document.getElementById('bg-music');
         const envelopeWrapper = document.getElementById('envelopeWrapper');
         const letterContent = document.getElementById('letterContent');
         const cakeContainer = document.getElementById('cakeContainer');
         const closeBtn = document.getElementById('closeBtn');
+        const closeBtnIcon = document.getElementById('closeBtnIcon');
         
         let audioContext, analyser, microphone, isBlowDetected = false;
 
-        // --- BAŞLATMA ---
         startBtn.addEventListener('click', async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -306,29 +306,22 @@
                 microphone.connect(analyser);
                 analyser.fftSize = 256;
                 overlay.style.display = 'none';
-                
-                // Müzik sesini 0 yap ve hazırla (ama çalma)
                 audio.volume = 0;
-                
                 detectBlow();
             } catch (err) {
                 alert("Mikrofon izni şart! Sayfayı yenile.");
             }
         });
 
-        // --- ÜFLEME ALGILAMA ---
         function detectBlow() {
             if (isBlowDetected) return;
-
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             analyser.getByteFrequencyData(dataArray);
-
             let sum = 0;
             for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
             let average = sum / bufferLength;
 
-            // ZORLUK AYARI: 85dB Eşiği (Normal konuşma ~50-60, üfleme 85+)
             if (average > 85) { 
                 extinguishCandles();
             } else {
@@ -336,7 +329,6 @@
             }
         }
 
-        // --- MİKROFON ERİŞİMİNİ KES ---
         function stopMicrophone() {
             if (microphone) {
                 const stream = microphone.mediaStream;
@@ -344,45 +336,36 @@
             }
         }
 
-        // --- MUMLAR SÖNDÜĞÜNDE ---
         function extinguishCandles() {
             isBlowDetected = true;
-            stopMicrophone(); // Mikrofon erişimini kes
-            flames.forEach(f => f.classList.add('off'));
+            stopMicrophone();
+            // Alevleri tekrar seçiyoruz çünkü DOM yüklendiğinde alevler hazır
+            document.querySelectorAll('.flame').forEach(f => f.classList.add('off')); 
             guide.style.opacity = 0;
             guide.innerText = "İyi ki doğdun! 🎉";
             guide.style.opacity = 1;
-
-            // 1. Müzik Fade-In Başlat
             audio.play();
             fadeInAudio();
-
-            // 2. Efektler
             launchConfetti();
             createBalloons();
-
-            // 3. Mektubu Getir (5 Saniye Sonra)
             setTimeout(() => {
-                cakeContainer.style.opacity = "0.3"; // Pastayı biraz silikleştir
+                cakeContainer.style.opacity = "0.3";
                 envelopeWrapper.classList.add('visible');
             }, 5000);
         }
 
-        // --- SES FADE-IN FONKSİYONU ---
         function fadeInAudio() {
             let vol = 0;
             const interval = setInterval(() => {
                 if (vol < 1.0) {
-                    vol += 0.05; // Artış hızı
+                    vol += 0.05;
                     audio.volume = Math.min(vol, 1.0);
                 } else {
                     clearInterval(interval);
                 }
-            }, 200); // Her 200ms'de bir sesi artır
+            }, 200);
         }
 
-        // --- ZARF ETKİLEŞİMİ (TIKLAMA) ---
-        // 1. Zarfa Tıkla: Kapağı Aç
         envelopeWrapper.addEventListener('click', (e) => {
             if(envelopeWrapper.classList.contains('full-read')) return;
             if (!envelopeWrapper.classList.contains('open')) {
@@ -391,7 +374,6 @@
             }
         });
 
-        // 2. Mektuba Tıkla: Tamamen Çıkar
         letterContent.addEventListener('click', (e) => {
             if (envelopeWrapper.classList.contains('open')) {
                 envelopeWrapper.classList.add('full-read');
@@ -399,7 +381,6 @@
             }
         });
 
-        // --- ANİMASYON YARDIMCILARI ---
         function launchConfetti() {
             const end = Date.now() + 3000;
             (function frame() {
@@ -414,42 +395,32 @@
             for (let i = 0; i < 30; i++) {
                 const b = document.createElement('div');
                 b.className = 'balloon';
-                b.style.left = Math.random() * 90 + 5 + 'vw'; // Ekrandan taşmasın
+                b.style.left = Math.random() * 90 + 5 + 'vw';
                 b.style.background = colors[Math.floor(Math.random() * colors.length)];
                 b.style.animationDelay = Math.random() * 2 + 's';
                 document.body.appendChild(b);
             }
         }
 
-        // --- KAPATMA/TEKRAR DÜĞMESI ---
         let isRepeatMode = false;
-        const closeBtnIcon = document.getElementById('closeBtnIcon');
-        
         closeBtn.addEventListener('click', () => {
             if (!isRepeatMode) {
-                // Kapatma modu: Mektubu ve zarfı kapat
                 envelopeWrapper.classList.remove('full-read', 'open');
                 closeBtn.classList.remove('visible');
                 closeBtnIcon.innerHTML = '<circle cx="15" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><path d="M 15 10 L 15 20 M 10 15 L 20 15" stroke="white" stroke-width="2" stroke-linecap="round"/>';
                 isRepeatMode = true;
                 closeBtn.classList.add('visible');
             } else {
-                // Tekrar modu: Sayfayı yenile
                 closeBtnIcon.classList.add('spinning');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+                setTimeout(() => { window.location.reload(); }, 500);
             }
         });
 
-        // Mektup açıldığında ilk kez açıldı mı kontrol et
         let isFirstOpen = true;
-        
         const fullReadObserver = new MutationObserver(() => {
             if (envelopeWrapper.classList.contains('full-read')) {
                 let delay = isFirstOpen ? 10000 : 2000;
                 isFirstOpen = false;
-                
                 setTimeout(() => {
                     if (envelopeWrapper.classList.contains('full-read')) {
                         isRepeatMode = false;
