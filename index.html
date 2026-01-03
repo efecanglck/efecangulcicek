@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBD Çingenemmm🐿️💨💨💨</title>
+    <title>İyi ki Varsın Çingenemmm! 🐿️💨💨💨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -48,16 +48,14 @@
             background: #f8c291;
             border-radius: 10px 10px 0 0;
             box-shadow: 0 4px 0 #e17055 inset, 2px 2px 5px rgba(0,0,0,0.3);
-            display: flex; 
-            justify-content: center; 
+            display: flex; justify-content: center; 
         }
         
         .layer::before {
             content: ''; position: absolute; top: 0; left: -5%;
             width: 110%; height: 20px;
             background: #fdcb6e;
-            border-radius: 20px;
-            z-index: 5; 
+            border-radius: 20px; z-index: 5; 
             box-shadow: 0 2px 0 #fab1a0;
         }
 
@@ -69,9 +67,7 @@
             width: 330px; height: 15px; background: #d63031; border-radius: 5px;
         }
 
-        .candle-spot {
-            position: absolute; bottom: 100%; margin-bottom: -8px; z-index: 4;
-        }
+        .candle-spot { position: absolute; bottom: 100%; margin-bottom: -8px; z-index: 4; }
         .pos-left { left: 15px; }
         .pos-right { right: 15px; }
         .pos-center { display: flex; gap: 10px; justify-content: center; width: 100%; }
@@ -116,7 +112,7 @@
         }
         @keyframes floatUp { to { bottom: 120vh; } }
 
-        /* Zarf Stilleri */
+        /* Zarf */
         .envelope-wrapper {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
             z-index: 100; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
@@ -148,7 +144,6 @@
         .letter h2 { margin: 0; font-size: 1.5rem; color: #d63031; }
         .letter p { font-size: 1.2rem; line-height: 1.4; text-align: left; margin-top: 10px; width: 100%; }
         
-        /* Fotoğraf Stili */
         .letter-photo {
             width: 90%; max-width: 250px; height: auto; margin-top: 15px;
             border-radius: 5px; border: 5px solid white;
@@ -174,27 +169,26 @@
         
         /* --- JSON İKON BUTONU --- */
         .close-btn {
-            position: fixed; top: 30px; right: 30px; width: 60px; height: 60px;
+            position: fixed; top: 30px; right: 30px; 
+            width: 50px; height: 50px; /* Buton boyutu biraz daha zarif olsun */
             background: rgba(255, 105, 180, 0.8); border: none; border-radius: 50%;
             cursor: pointer; z-index: 300;
             opacity: 0; transition: opacity 0.3s, transform 0.2s;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            overflow: hidden; /* Animasyonlar taşmasın */
+            overflow: hidden; 
         }
         .close-btn.visible { opacity: 1; }
         .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
 
-        /* Lottie Konteynerleri */
+        /* Lottie Konteynerleri - Boyut Küçültüldü */
         .lottie-icon {
-            width: 35px; /* Animasyon boyutu */
-            height: 35px;
+            width: 24px;  /* Daha küçük ikon boyutu */
+            height: 24px;
             display: block;
+            pointer-events: none; /* Mouse olayları butona gitsin */
         }
-        /* Gizleme sınıfı */
-        .hidden-icon {
-            display: none !important;
-        }
+        .hidden-icon { display: none !important; }
 
     </style>
 </head>
@@ -210,32 +204,20 @@
     </div>
 
     <div class="cake-container" id="cakeContainer">
-        
         <div class="layer layer-top">
             <div class="candle-spot pos-center">
                 <div class="number-candle">1<div class="flame"></div></div>
                 <div class="number-candle">8<div class="flame"></div></div>
             </div>
         </div>
-
         <div class="layer layer-middle">
-            <div class="candle-spot pos-left">
-                <div class="candle"><div class="flame"></div></div>
-            </div>
-            <div class="candle-spot pos-right">
-                <div class="candle"><div class="flame"></div></div>
-            </div>
+            <div class="candle-spot pos-left"><div class="candle"><div class="flame"></div></div></div>
+            <div class="candle-spot pos-right"><div class="candle"><div class="flame"></div></div></div>
         </div>
-
         <div class="layer layer-bottom">
-            <div class="candle-spot pos-left">
-                <div class="candle"><div class="flame"></div></div>
-            </div>
-            <div class="candle-spot pos-right">
-                <div class="candle"><div class="flame"></div></div>
-            </div>
+            <div class="candle-spot pos-left"><div class="candle"><div class="flame"></div></div></div>
+            <div class="candle-spot pos-right"><div class="candle"><div class="flame"></div></div></div>
         </div>
-
     </div>
 
     <p class="guide-text" id="guide">Mikrofona doğru güçlü üfle bakalımsss!💨</p>
@@ -279,22 +261,32 @@
         const iconRefreshContainer = document.getElementById('icon-refresh');
         
         // Lottie Animasyonlarını Yükle
-        // multiply.json dosyanızın 'icon' klasöründe olduğundan emin olun
+        // LOOP: FALSE, AUTOPLAY: FALSE yapıyoruz ki kontrol bizde olsun.
         let animMultiply = lottie.loadAnimation({
             container: iconMultiplyContainer,
             renderer: 'svg',
-            loop: true,
-            autoplay: true,
+            loop: false,
+            autoplay: false, 
             path: 'icon/multiply.json' 
         });
 
-        // refresh.json dosyanızın 'icon' klasöründe olduğundan emin olun
         let animRefresh = lottie.loadAnimation({
             container: iconRefreshContainer,
             renderer: 'svg',
-            loop: true,
-            autoplay: false, // Tıklandığında dönecek, başta durabilir
+            loop: false,
+            autoplay: false, 
             path: 'icon/refresh.json'
+        });
+
+        // Hover Effect (Mouse üzerine gelince bir kere oynasın)
+        closeBtn.addEventListener('mouseenter', () => {
+            if (!isRepeatMode) {
+                // Multiply modundaysa
+                animMultiply.goToAndPlay(0, true);
+            } else {
+                // Refresh modundaysa
+                animRefresh.goToAndPlay(0, true);
+            }
         });
 
         let audioContext, analyser, microphone, isBlowDetected = false;
@@ -403,32 +395,31 @@
             }
         }
 
-        /* --- BUTON MANTIĞI GÜNCELLENDİ (LOTTIE İÇİN) --- */
         let isRepeatMode = false;
         
         closeBtn.addEventListener('click', () => {
             if (!isRepeatMode) {
-                // ÇARPIYA TIKLANDI: Mektubu kapat, butonu Yenile ikonuna çevir
+                // ÇARPIYA TIKLANDI: Mektubu kapat
                 envelopeWrapper.classList.remove('full-read', 'open');
-                closeBtn.classList.remove('visible'); // Kısa bir efekt için gizle
+                closeBtn.classList.remove('visible'); 
                 
                 // İkonları değiştir
                 iconMultiplyContainer.classList.add('hidden-icon');
                 iconRefreshContainer.classList.remove('hidden-icon');
                 
-                // Refresh animasyonunu başlat (isteğe bağlı)
-                animRefresh.play(); 
-
+                // Refresh butonuna geçiyoruz, mod değişiyor
                 isRepeatMode = true;
                 
-                // Butonu tekrar görünür yap
+                // Buton tekrar görünür olduğunda Refresh animasyonu BİR KERE oynasın
                 setTimeout(() => {
                     closeBtn.classList.add('visible');
+                    animRefresh.goToAndPlay(0, true); // Oynat
                 }, 300);
 
             } else {
                 // YENİLE (REFRESH) İKONUNA TIKLANDI: Sayfayı yenile
-                animRefresh.play(); // Dönme efekti
+                // Tıklayınca da son kez bir dönsün
+                animRefresh.goToAndPlay(0, true);
                 setTimeout(() => { window.location.reload(); }, 500);
             }
         });
@@ -440,17 +431,17 @@
                 isFirstOpen = false;
                 setTimeout(() => {
                     if (envelopeWrapper.classList.contains('full-read')) {
-                        // Eğer mektup hala açıksa, kapatma butonunu göster (Çarpı ikonu ile)
+                        // Mektup açıkken Buton Gösterilecek
                         isRepeatMode = false;
                         
-                        // İkonları resetle (Çarpı göster, Refresh gizle)
+                        // İkonları resetle
                         iconMultiplyContainer.classList.remove('hidden-icon');
                         iconRefreshContainer.classList.add('hidden-icon');
                         
-                        // Animasyonu baştan başlat
-                        animMultiply.goToAndPlay(0, true); 
-
                         closeBtn.classList.add('visible');
+                        
+                        // Multiply animasyonu ekrana gelince BİR KERE oynasın
+                        animMultiply.goToAndPlay(0, true);
                     }
                 }, delay);
             }
