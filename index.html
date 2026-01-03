@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İyi ki Doğdun Çingenemmm! 🐿️💨💨💨💨</title>
+    <title>HBD Çingenemmm🐿️💨💨💨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
     <style>
         body {
             margin: 0; padding: 0;
@@ -41,82 +43,51 @@
             transition: opacity 1s;
         }
 
-        /* Katman Genel Stili */
         .layer {
             position: relative;
             background: #f8c291;
             border-radius: 10px 10px 0 0;
             box-shadow: 0 4px 0 #e17055 inset, 2px 2px 5px rgba(0,0,0,0.3);
             display: flex; 
-            justify-content: center; /* İçerikleri (mumları) ortala */
+            justify-content: center; 
         }
         
-        /* Krema (Her katman için) */
         .layer::before {
             content: ''; position: absolute; top: 0; left: -5%;
             width: 110%; height: 20px;
             background: #fdcb6e;
             border-radius: 20px;
-            z-index: 5; /* Krema z-index'i */
+            z-index: 5; 
             box-shadow: 0 2px 0 #fab1a0;
         }
 
-        /* --- KATMAN BOYUTLARI --- */
-        .layer-top {
-            width: 140px; height: 50px; z-index: 10;
-            background: #f8c291;
-        }
-        .layer-middle {
-            width: 220px; height: 60px; z-index: 9;
-            background: #fab1a0;
-        }
-        .layer-bottom {
-            width: 300px; height: 70px; z-index: 8;
-            background: #e17055;
-        }
-        /* Alt Tabak */
+        .layer-top { width: 140px; height: 50px; z-index: 10; background: #f8c291; }
+        .layer-middle { width: 220px; height: 60px; z-index: 9; background: #fab1a0; }
+        .layer-bottom { width: 300px; height: 70px; z-index: 8; background: #e17055; }
         .layer-bottom::after {
             content: ''; position: absolute; bottom: -10px; left: -15px;
             width: 330px; height: 15px; background: #d63031; border-radius: 5px;
         }
 
-        /* --- MUM KONUMLANDIRMA SİSTEMİ --- */
-        
-        /* Mumlar katmanın içinde yer alacak ve bottom:100% ile üste yapışacak */
         .candle-spot {
-            position: absolute;
-            bottom: 100%; /* Katmanın tam tepesine yapış */
-            margin-bottom: -8px; /* Kremaya hafif batmış efekti */
-            z-index: 4; /* Kremanın arkasında kalsın (normal mumlar için) */
+            position: absolute; bottom: 100%; margin-bottom: -8px; z-index: 4;
         }
-
-        /* Sol ve Sağ Konumlandırmalar */
         .pos-left { left: 15px; }
         .pos-right { right: 15px; }
-        .pos-center { 
-            display: flex; gap: 10px; justify-content: center;
-            width: 100%;
-        }
+        .pos-center { display: flex; gap: 10px; justify-content: center; width: 100%; }
 
-        /* Mum Tasarımı */
         .candle {
             position: relative; width: 12px; height: 40px;
             background: repeating-linear-gradient(45deg, #fff, #fff 5px, #74b9ff 5px, #74b9ff 10px);
-            border-radius: 3px;
-            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+            border-radius: 3px; box-shadow: 0 2px 2px rgba(0,0,0,0.2);
         }
 
-        /* Rakam Mum Tasarımı */
         .number-candle {
             font-size: 3rem; font-weight: bold; color: #ff69b4;
-            text-shadow: 2px 2px 0px #fff; 
-            position: relative; 
-            z-index: 10; 
-            line-height: 1; 
-            margin-bottom: -5px; 
+            text-shadow: 2px 2px 0px #fff; position: relative; z-index: 10; 
+            line-height: 1; margin-bottom: -5px; 
         }
 
-        /* Alev Tasarımı */
         .flame {
             position: absolute; left: 50%; transform: translateX(-50%);
             width: 12px; height: 20px;
@@ -132,15 +103,6 @@
         @keyframes flicker {
             0% { transform: translateX(-50%) skewX(2deg) scaleY(1); }
             100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
-        }
-
-        /* Diğer Efektler */
-        .birthday-confetti {
-            position: fixed; width: 10px; height: 10px;
-            pointer-events: none; animation: float-confetti 3s infinite ease-in;
-        }
-        @keyframes float-confetti {
-            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
         .balloon {
@@ -175,7 +137,6 @@
             background: #f0e6d8; border-top: 1px solid #d4c4b0; z-index: 4; border-radius: 0 0 3px 3px;
         }
         
-        /* MEKTUP KAĞIDI */
         .letter {
             position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);
             width: 270px; height: 150px; background: #fffdf0;
@@ -187,22 +148,16 @@
         .letter h2 { margin: 0; font-size: 1.5rem; color: #d63031; }
         .letter p { font-size: 1.2rem; line-height: 1.4; text-align: left; margin-top: 10px; width: 100%; }
         
-        /* MEKTUP İÇİNDEKİ FOTOĞRAF STİLİ */
+        /* Fotoğraf Stili */
         .letter-photo {
-            width: 90%;          /* Kağıdın genişliğinin %90'ını kaplar */
-            max-width: 250px;    /* Çok aşırı büyümemesi için sınır */
-            height: auto;        /* Orantılı şekilde yükseklik ayarlar */
-            margin-top: 15px;    /* Yazıdan biraz uzaklaşır */
-            border-radius: 5px;  /* Köşeleri yumuşatır */
-            border: 5px solid white; /* Polaroid gibi beyaz çerçeve */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Hafif gölge */
-            transform: rotate(-2deg); /* Hafif eğik duruş, havalı olsun diye */
+            width: 90%; max-width: 250px; height: auto; margin-top: 15px;
+            border-radius: 5px; border: 5px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transform: rotate(-2deg);
         }
 
         .envelope-wrapper.open .flap { transform: rotateX(180deg); z-index: 1; }
         .envelope-wrapper.open .letter { bottom: 60px; z-index: 6; height: 220px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
         
-        /* TAM OKUMA MODU */
         .envelope-wrapper.full-read .letter {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 350px; height: 500px; bottom: auto; z-index: 200;
@@ -217,21 +172,29 @@
         .envelope-wrapper.visible .click-hint { opacity: 1; }
         .envelope-wrapper.full-read .click-hint { display: none; }
         
-        /* Close Button */
+        /* --- JSON İKON BUTONU --- */
         .close-btn {
-            position: fixed; top: 30px; right: 30px; width: 50px; height: 50px;
+            position: fixed; top: 30px; right: 30px; width: 60px; height: 60px;
             background: rgba(255, 105, 180, 0.8); border: none; border-radius: 50%;
-            font-size: 24px; color: white; cursor: pointer; z-index: 300;
-            opacity: 0; transition: opacity 0.3s;
+            cursor: pointer; z-index: 300;
+            opacity: 0; transition: opacity 0.3s, transform 0.2s;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden; /* Animasyonlar taşmasın */
         }
         .close-btn.visible { opacity: 1; }
         .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
-        #closeBtnIcon { transition: transform 0.3s ease; }
-        .close-btn:hover #closeBtnIcon { transform: rotate(90deg); }
-        @keyframes rotateIcon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        #closeBtnIcon.spinning { animation: rotateIcon 2s linear infinite; }
+
+        /* Lottie Konteynerleri */
+        .lottie-icon {
+            width: 35px; /* Animasyon boyutu */
+            height: 35px;
+            display: block;
+        }
+        /* Gizleme sınıfı */
+        .hidden-icon {
+            display: none !important;
+        }
 
     </style>
 </head>
@@ -297,10 +260,8 @@
     </div>
 
     <button class="close-btn" id="closeBtn">
-        <svg id="closeBtnIcon" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="white" stroke-width="2">
-            <line x1="6" y1="6" x2="24" y2="24"/>
-            <line x1="24" y1="6" x2="6" y2="24"/>
-        </svg>
+        <div id="icon-multiply" class="lottie-icon"></div>
+        <div id="icon-refresh" class="lottie-icon hidden-icon"></div>
     </button>
 
     <script>
@@ -312,8 +273,30 @@
         const letterContent = document.getElementById('letterContent');
         const cakeContainer = document.getElementById('cakeContainer');
         const closeBtn = document.getElementById('closeBtn');
-        const closeBtnIcon = document.getElementById('closeBtnIcon');
         
+        // Lottie Kutuları
+        const iconMultiplyContainer = document.getElementById('icon-multiply');
+        const iconRefreshContainer = document.getElementById('icon-refresh');
+        
+        // Lottie Animasyonlarını Yükle
+        // multiply.json dosyanızın 'icon' klasöründe olduğundan emin olun
+        let animMultiply = lottie.loadAnimation({
+            container: iconMultiplyContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'icon/multiply.json' 
+        });
+
+        // refresh.json dosyanızın 'icon' klasöründe olduğundan emin olun
+        let animRefresh = lottie.loadAnimation({
+            container: iconRefreshContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: false, // Tıklandığında dönecek, başta durabilir
+            path: 'icon/refresh.json'
+        });
+
         let audioContext, analyser, microphone, isBlowDetected = false;
 
         startBtn.addEventListener('click', async () => {
@@ -420,16 +403,32 @@
             }
         }
 
+        /* --- BUTON MANTIĞI GÜNCELLENDİ (LOTTIE İÇİN) --- */
         let isRepeatMode = false;
+        
         closeBtn.addEventListener('click', () => {
             if (!isRepeatMode) {
+                // ÇARPIYA TIKLANDI: Mektubu kapat, butonu Yenile ikonuna çevir
                 envelopeWrapper.classList.remove('full-read', 'open');
-                closeBtn.classList.remove('visible');
-                closeBtnIcon.innerHTML = '<circle cx="15" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><path d="M 15 10 L 15 20 M 10 15 L 20 15" stroke="white" stroke-width="2" stroke-linecap="round"/>';
+                closeBtn.classList.remove('visible'); // Kısa bir efekt için gizle
+                
+                // İkonları değiştir
+                iconMultiplyContainer.classList.add('hidden-icon');
+                iconRefreshContainer.classList.remove('hidden-icon');
+                
+                // Refresh animasyonunu başlat (isteğe bağlı)
+                animRefresh.play(); 
+
                 isRepeatMode = true;
-                closeBtn.classList.add('visible');
+                
+                // Butonu tekrar görünür yap
+                setTimeout(() => {
+                    closeBtn.classList.add('visible');
+                }, 300);
+
             } else {
-                closeBtnIcon.classList.add('spinning');
+                // YENİLE (REFRESH) İKONUNA TIKLANDI: Sayfayı yenile
+                animRefresh.play(); // Dönme efekti
                 setTimeout(() => { window.location.reload(); }, 500);
             }
         });
@@ -441,9 +440,16 @@
                 isFirstOpen = false;
                 setTimeout(() => {
                     if (envelopeWrapper.classList.contains('full-read')) {
+                        // Eğer mektup hala açıksa, kapatma butonunu göster (Çarpı ikonu ile)
                         isRepeatMode = false;
-                        closeBtnIcon.innerHTML = '<line x1="6" y1="6" x2="24" y2="24"/><line x1="24" y1="6" x2="6" y2="24"/>';
-                        closeBtnIcon.classList.remove('spinning');
+                        
+                        // İkonları resetle (Çarpı göster, Refresh gizle)
+                        iconMultiplyContainer.classList.remove('hidden-icon');
+                        iconRefreshContainer.classList.add('hidden-icon');
+                        
+                        // Animasyonu baştan başlat
+                        animMultiply.goToAndPlay(0, true); 
+
                         closeBtn.classList.add('visible');
                     }
                 }, delay);
