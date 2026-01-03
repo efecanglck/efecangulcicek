@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İyi ki Varsın Çingenemmm! 🐿️💨💨💨</title>
+    <title>İyi ki Doğdun Çingenemmm! 🐿️💨💨💨💨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -17,6 +17,7 @@
             justify-content: center; align-items: center;
             height: 100vh; overflow: hidden;
             font-family: 'Poppins', sans-serif;
+            perspective: 1000px;
         }
 
         /* --- Giriş Ekranı --- */
@@ -41,6 +42,7 @@
             align-items: center;
             transform: scale(1.1);
             transition: opacity 1s;
+            z-index: 50; 
         }
 
         .layer {
@@ -101,16 +103,31 @@
             100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
         }
 
+        /* --- PNG BALON STİLLERİ --- */
         .balloon {
-            position: absolute; bottom: -120px; width: 45px; height: 55px;
-            background: red; border-radius: 50%;
-            animation: floatUp 6s ease-in forwards; z-index: 10;
+            position: absolute;
+            bottom: -150px; 
+            width: 100px; /* PNG boyutuna göre bunu ayarlayabilirsin */
+            height: auto; /* Oranı bozmasın */
+            z-index: 20; 
+            
+            /* PERFORMANS İÇİN KRİTİK: */
+            will-change: transform, opacity; 
+            
+            /* Animasyonlar */
+            animation: floatUp linear infinite, sway ease-in-out infinite alternate;
         }
-        .balloon::before {
-            content: ''; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
-            width: 1px; height: 30px; background: rgba(255,255,255,0.7);
+
+        /* Animasyonlar */
+        @keyframes floatUp {
+            0% { bottom: -150px; opacity: 1; }
+            100% { bottom: 110vh; opacity: 0.8; } /* Yukarı çıkınca tamamen kaybolmasın, ekrandan çıksın */
         }
-        @keyframes floatUp { to { bottom: 120vh; } }
+        
+        @keyframes sway {
+            0% { transform: rotate(-8deg) translateX(-10px); }
+            100% { transform: rotate(8deg) translateX(10px); } 
+        }
 
         /* Zarf */
         .envelope-wrapper {
@@ -155,11 +172,12 @@
         
         .envelope-wrapper.full-read .letter {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 350px; height: 500px; bottom: auto; z-index: 200;
+            width: 350px; height: 500px; bottom: auto; 
+            z-index: 200; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow-y: auto; border-radius: 5px;
         }
         
-        .guide-text { margin-top: 20px; color: #888; font-size: 0.8rem; }
+        .guide-text { margin-top: 20px; color: #888; font-size: 0.8rem; z-index: 60; }
         .click-hint {
             position: absolute; bottom: -40px; width: 100%; text-align: center;
             color: white; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s;
@@ -167,10 +185,9 @@
         .envelope-wrapper.visible .click-hint { opacity: 1; }
         .envelope-wrapper.full-read .click-hint { display: none; }
         
-        /* --- JSON İKON BUTONU --- */
         .close-btn {
             position: fixed; top: 30px; right: 30px; 
-            width: 50px; height: 50px; /* Buton boyutu biraz daha zarif olsun */
+            width: 50px; height: 50px;
             background: rgba(255, 105, 180, 0.8); border: none; border-radius: 50%;
             cursor: pointer; z-index: 300;
             opacity: 0; transition: opacity 0.3s, transform 0.2s;
@@ -181,12 +198,8 @@
         .close-btn.visible { opacity: 1; }
         .close-btn:hover { background: rgba(255, 105, 180, 1); transform: scale(1.1); }
 
-        /* Lottie Konteynerleri - Boyut Küçültüldü */
         .lottie-icon {
-            width: 24px;  /* Daha küçük ikon boyutu */
-            height: 24px;
-            display: block;
-            pointer-events: none; /* Mouse olayları butona gitsin */
+            width: 24px; height: 24px; display: block; pointer-events: none; 
         }
         .hidden-icon { display: none !important; }
 
@@ -255,38 +268,18 @@
         const letterContent = document.getElementById('letterContent');
         const cakeContainer = document.getElementById('cakeContainer');
         const closeBtn = document.getElementById('closeBtn');
-        
-        // Lottie Kutuları
         const iconMultiplyContainer = document.getElementById('icon-multiply');
         const iconRefreshContainer = document.getElementById('icon-refresh');
         
-        // Lottie Animasyonlarını Yükle
-        // LOOP: FALSE, AUTOPLAY: FALSE yapıyoruz ki kontrol bizde olsun.
         let animMultiply = lottie.loadAnimation({
-            container: iconMultiplyContainer,
-            renderer: 'svg',
-            loop: false,
-            autoplay: false, 
-            path: 'icon/multiply.json' 
+            container: iconMultiplyContainer, renderer: 'svg', loop: false, autoplay: false, path: 'icon/multiply.json' 
         });
-
         let animRefresh = lottie.loadAnimation({
-            container: iconRefreshContainer,
-            renderer: 'svg',
-            loop: false,
-            autoplay: false, 
-            path: 'icon/refresh.json'
+            container: iconRefreshContainer, renderer: 'svg', loop: false, autoplay: false, path: 'icon/refresh.json'
         });
 
-        // Hover Effect (Mouse üzerine gelince bir kere oynasın)
         closeBtn.addEventListener('mouseenter', () => {
-            if (!isRepeatMode) {
-                // Multiply modundaysa
-                animMultiply.goToAndPlay(0, true);
-            } else {
-                // Refresh modundaysa
-                animRefresh.goToAndPlay(0, true);
-            }
+            if (!isRepeatMode) { animMultiply.goToAndPlay(0, true); } else { animRefresh.goToAndPlay(0, true); }
         });
 
         let audioContext, analyser, microphone, isBlowDetected = false;
@@ -315,12 +308,7 @@
             let sum = 0;
             for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
             let average = sum / bufferLength;
-
-            if (average > 85) { 
-                extinguishCandles();
-            } else {
-                requestAnimationFrame(detectBlow);
-            }
+            if (average > 85) { extinguishCandles(); } else { requestAnimationFrame(detectBlow); }
         }
 
         function stopMicrophone() {
@@ -340,7 +328,7 @@
             audio.play();
             fadeInAudio();
             launchConfetti();
-            createBalloons();
+            createPngBalloons(); // PNG Balon fonksiyonunu çağır
             setTimeout(() => {
                 cakeContainer.style.opacity = "0.3";
                 envelopeWrapper.classList.add('visible');
@@ -350,12 +338,7 @@
         function fadeInAudio() {
             let vol = 0;
             const interval = setInterval(() => {
-                if (vol < 1.0) {
-                    vol += 0.05;
-                    audio.volume = Math.min(vol, 1.0);
-                } else {
-                    clearInterval(interval);
-                }
+                if (vol < 1.0) { vol += 0.05; audio.volume = Math.min(vol, 1.0); } else { clearInterval(interval); }
             }, 200);
         }
 
@@ -383,42 +366,51 @@
             }());
         }
 
-        function createBalloons() {
-            const colors = ['#ff7675', '#74b9ff', '#55efc4', '#a29bfe'];
-            for (let i = 0; i < 30; i++) {
-                const b = document.createElement('div');
+        // --- OPTİMİZE EDİLMİŞ PNG BALON YARATMA ---
+        function createPngBalloons() {
+            // Sayıyı 30'a düşürdük
+            const balloonCount = 30; 
+            
+            for (let i = 0; i < balloonCount; i++) {
+                const b = document.createElement('img'); // Artık div değil img
                 b.className = 'balloon';
-                b.style.left = Math.random() * 90 + 5 + 'vw';
-                b.style.background = colors[Math.floor(Math.random() * colors.length)];
-                b.style.animationDelay = Math.random() * 2 + 's';
+                
+                // 1'den 7'ye kadar rastgele dosya seçimi
+                const randomNum = Math.floor(Math.random() * 7) + 1;
+                b.src = `balloon/balon${randomNum}.png`;
+                
+                // Rastgele Konum
+                b.style.left = Math.random() * 90 + 'vw';
+                
+                // Derinlik efekti (Scale)
+                const scale = Math.random() * 0.5 + 0.5; // 0.5 ile 1.0 arası boyut
+                b.style.transform = `scale(${scale})`; // Başlangıç transformu
+                
+                // Rastgele Hızlar
+                const floatDuration = Math.random() * 5 + 10 + 's'; 
+                const swayDuration = Math.random() * 2 + 3 + 's';
+                b.style.animationDuration = `${floatDuration}, ${swayDuration}`;
+                
+                // Rastgele Gecikme
+                b.style.animationDelay = Math.random() * 10 + 's';
+                
                 document.body.appendChild(b);
             }
         }
 
         let isRepeatMode = false;
-        
         closeBtn.addEventListener('click', () => {
             if (!isRepeatMode) {
-                // ÇARPIYA TIKLANDI: Mektubu kapat
                 envelopeWrapper.classList.remove('full-read', 'open');
                 closeBtn.classList.remove('visible'); 
-                
-                // İkonları değiştir
                 iconMultiplyContainer.classList.add('hidden-icon');
                 iconRefreshContainer.classList.remove('hidden-icon');
-                
-                // Refresh butonuna geçiyoruz, mod değişiyor
                 isRepeatMode = true;
-                
-                // Buton tekrar görünür olduğunda Refresh animasyonu BİR KERE oynasın
                 setTimeout(() => {
                     closeBtn.classList.add('visible');
-                    animRefresh.goToAndPlay(0, true); // Oynat
+                    animRefresh.goToAndPlay(0, true); 
                 }, 300);
-
             } else {
-                // YENİLE (REFRESH) İKONUNA TIKLANDI: Sayfayı yenile
-                // Tıklayınca da son kez bir dönsün
                 animRefresh.goToAndPlay(0, true);
                 setTimeout(() => { window.location.reload(); }, 500);
             }
@@ -431,16 +423,10 @@
                 isFirstOpen = false;
                 setTimeout(() => {
                     if (envelopeWrapper.classList.contains('full-read')) {
-                        // Mektup açıkken Buton Gösterilecek
                         isRepeatMode = false;
-                        
-                        // İkonları resetle
                         iconMultiplyContainer.classList.remove('hidden-icon');
                         iconRefreshContainer.classList.add('hidden-icon');
-                        
                         closeBtn.classList.add('visible');
-                        
-                        // Multiply animasyonu ekrana gelince BİR KERE oynasın
                         animMultiply.goToAndPlay(0, true);
                     }
                 }, delay);
