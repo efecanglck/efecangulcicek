@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>İyi ki Doğdun Çingenemmm! 🐿️💨💨💨💨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -18,6 +18,8 @@
             height: 100vh; overflow: hidden;
             font-family: 'Poppins', sans-serif;
             perspective: 1000px;
+            /* Telefondaki seçimleri engelle */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- Giriş Ekranı --- */
@@ -103,30 +105,42 @@
             100% { transform: translateX(-50%) skewX(-2deg) scaleY(1.1); }
         }
 
-        /* --- PNG BALON STİLLERİ --- */
+        /* --- BALON KONTEYNERİ & PNG STİLLERİ --- */
+        #balloon-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Mouse etkileşimini kapatır */
+            z-index: 20;
+            overflow: hidden;
+            transition: opacity 1s ease; /* Zarf gelince yumuşakça sönmesi için */
+        }
+
         .balloon {
             position: absolute;
-            bottom: -150px; 
-            width: 100px; /* PNG boyutuna göre bunu ayarlayabilirsin */
-            height: auto; /* Oranı bozmasın */
-            z-index: 20; 
+            bottom: -30vh; /* Ekranın çok daha altından başlasın (görünmez alan) */
+            height: auto;
             
-            /* PERFORMANS İÇİN KRİTİK: */
-            will-change: transform, opacity; 
+            /* Tıklama ve Seçmeyi Engelleme */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+
+            /* Performans */
+            will-change: transform, opacity;
             
             /* Animasyonlar */
             animation: floatUp linear infinite, sway ease-in-out infinite alternate;
         }
 
-        /* Animasyonlar */
         @keyframes floatUp {
-            0% { bottom: -150px; opacity: 1; }
-            100% { bottom: 110vh; opacity: 0.8; } /* Yukarı çıkınca tamamen kaybolmasın, ekrandan çıksın */
+            0% { bottom: -30vh; opacity: 1; }
+            100% { bottom: 120vh; opacity: 0.9; }
         }
         
         @keyframes sway {
-            0% { transform: rotate(-8deg) translateX(-10px); }
-            100% { transform: rotate(8deg) translateX(10px); } 
+            0% { transform: rotate(-5deg) translateX(-15px); }
+            100% { transform: rotate(5deg) translateX(15px); } 
         }
 
         /* Zarf */
@@ -216,6 +230,8 @@
         <button id="start-btn">Başlat 😮‍💨</button>
     </div>
 
+    <div id="balloon-container"></div>
+
     <div class="cake-container" id="cakeContainer">
         <div class="layer layer-top">
             <div class="candle-spot pos-center">
@@ -267,6 +283,7 @@
         const envelopeWrapper = document.getElementById('envelopeWrapper');
         const letterContent = document.getElementById('letterContent');
         const cakeContainer = document.getElementById('cakeContainer');
+        const balloonContainer = document.getElementById('balloon-container'); // Balon kutusu
         const closeBtn = document.getElementById('closeBtn');
         const iconMultiplyContainer = document.getElementById('icon-multiply');
         const iconRefreshContainer = document.getElementById('icon-refresh');
@@ -328,9 +345,11 @@
             audio.play();
             fadeInAudio();
             launchConfetti();
-            createPngBalloons(); // PNG Balon fonksiyonunu çağır
+            createPngBalloons(); // Yeni balon sistemini başlat
             setTimeout(() => {
+                // Zarf gelince hem pastayı hem balonları sönükleştir
                 cakeContainer.style.opacity = "0.3";
+                balloonContainer.style.opacity = "0.3"; 
                 envelopeWrapper.classList.add('visible');
             }, 5000);
         }
@@ -366,35 +385,54 @@
             }());
         }
 
-        // --- OPTİMİZE EDİLMİŞ PNG BALON YARATMA ---
+        // --- OPTİMİZE EDİLMİŞ VE YAYILMIŞ BALON SİSTEMİ ---
         function createPngBalloons() {
-            // Sayıyı 30'a düşürdük
-            const balloonCount = 30; 
+            const container = document.getElementById('balloon-container');
+            const isMobile = window.innerWidth < 768; // Mobil kontrolü
             
+            // Mobilde daha az balon, PC'de normal sayı
+            const balloonCount = isMobile ? 15 : 25; 
+            
+            // Ekranı balon sayısı kadar "dilim"e (slot) bölüyoruz.
+            // Örneğin 100vw / 20 balon = her balonun 5vw'lik bir alanı olur.
+            const slotWidth = 100 / balloonCount; 
+
+            // Dilim listesi oluştur ve karıştır (Örn: [0, 1, 2, ... 24] -> [5, 12, 0, ...])
+            // Bu sayede balonlar sırayla ip gibi dizilmez, rastgele görünür ama aslında ızgaradadır.
+            let slots = Array.from({length: balloonCount}, (_, i) => i);
+            slots.sort(() => Math.random() - 0.5); // Karıştır
+
             for (let i = 0; i < balloonCount; i++) {
-                const b = document.createElement('img'); // Artık div değil img
+                const b = document.createElement('img');
                 b.className = 'balloon';
                 
-                // 1'den 7'ye kadar rastgele dosya seçimi
+                // Görsel Seçimi
                 const randomNum = Math.floor(Math.random() * 7) + 1;
                 b.src = `balloon/balon${randomNum}.png`;
                 
-                // Rastgele Konum
-                b.style.left = Math.random() * 90 + 'vw';
+                // BOYUT AYARLAMASI (Responsive)
+                // Mobilde: 50-70px arası | PC'de: 90-120px arası
+                const minSize = isMobile ? 50 : 90;
+                const sizeVariance = isMobile ? 20 : 30;
+                b.style.width = (minSize + Math.random() * sizeVariance) + 'px';
+
+                // KONUM (SLOT SİSTEMİ)
+                // Karıştırılmış slot listesinden bir slot alıyoruz
+                const mySlotIndex = slots[i];
+                // O slotun başlangıç noktası + slot içinde rastgele ince ayar (overlap önlemek için)
+                const leftPos = (mySlotIndex * slotWidth) + (Math.random() * (slotWidth - 2)); 
+                b.style.left = leftPos + 'vw';
                 
-                // Derinlik efekti (Scale)
-                const scale = Math.random() * 0.5 + 0.5; // 0.5 ile 1.0 arası boyut
-                b.style.transform = `scale(${scale})`; // Başlangıç transformu
-                
-                // Rastgele Hızlar
-                const floatDuration = Math.random() * 5 + 10 + 's'; 
+                // HIZLAR
+                const floatDuration = Math.random() * 5 + 10 + 's'; // 10-15sn
                 const swayDuration = Math.random() * 2 + 3 + 's';
                 b.style.animationDuration = `${floatDuration}, ${swayDuration}`;
                 
-                // Rastgele Gecikme
-                b.style.animationDelay = Math.random() * 10 + 's';
+                // GECİKME (ZAMANLA YAYILMA)
+                // Balonlar bir anda değil, 0 ile 12 saniye arasına yayılarak gelecek.
+                b.style.animationDelay = Math.random() * 12 + 's';
                 
-                document.body.appendChild(b);
+                container.appendChild(b);
             }
         }
 
